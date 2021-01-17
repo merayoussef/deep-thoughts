@@ -1,6 +1,5 @@
-const { User, Thought } = require("../models");
-// return an error if the username and password is wrong
 const { AuthenticationError } = require('apollo-server-express');
+const { User, Thought } = require("../models");
 const { signToken } = require('../utils/auth');
 
 // servers the response from typeDefs
@@ -15,16 +14,15 @@ const resolvers = {
 
                 return userData;
             }
+
             throw new AuthenticationError('Not logged in');
         },
-        // get all users
         users: async() => {
             return User.find()
                 .select('-__v -password')
-                .populate('friends')
-                .populate('thoughts');
+                .populate('thoughts')
+                .populate('friends');
         },
-        // get a user by username
         user: async(parent, { username }) => {
             return User.findOne({ username })
                 .select('-__v -password')
@@ -39,9 +37,10 @@ const resolvers = {
             return Thought.findOne({ _id });
         }
     },
+
     Mutation: {
         addUser: async(parent, args) => {
-            const user = await User.create(args)
+            const user = await User.create(args);
             const token = signToken(user);
 
             return { token, user };
@@ -56,7 +55,7 @@ const resolvers = {
             const correctPw = await user.isCorrectPassword(password);
 
             if (!correctPw) {
-                throw new AuthenticationError('Incorrect credentials')
+                throw new AuthenticationError('Incorrect credentials');
             }
 
             const token = signToken(user);

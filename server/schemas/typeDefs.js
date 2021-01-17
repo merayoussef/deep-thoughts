@@ -28,6 +28,11 @@ type Reaction {
     username: String
 }
 
+type Auth {
+    token: ID!
+    user: User
+}
+
 type Query {
     me: User
     users: [User]
@@ -43,12 +48,6 @@ type Mutation {
     addReaction(thoughtId: ID!, reactionBody: String!): Thought
     addFriend(friendId: ID!): User
 }
-
-type Auth {
-    token: ID!
-    user: User
-}
 `;
 
-// export the typeDefs
 module.exports = typeDefs;
